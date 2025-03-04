@@ -80,6 +80,8 @@ WHITE_LIST_LLM = [
     "anthropic.claude-3-5-haiku-20241022-v1:0",
     "gpt-4o-2024-08-06",
     "anthropic.claude-3-5-sonnet-20240620-v1:0",
+    "deepseek-chat",
+    "deepseek-reasoner",
 ]
 
 #  The below constants are for Autogluon-Assistant UI
@@ -120,15 +122,19 @@ LLM_MAPPING = {
     "Claude 3.5 with Amazon Bedrock": "anthropic.claude-3-5-sonnet-20241022-v2:0",
     "GPT 4o": "gpt-4o-2024-08-06",
     "GPT 4o (Azure)": "gpt-4o-2024-08-06",
+    "DeepSeek Chat": "deepseek-chat",
+    "DeepSeek Reasoner": "deepseek-reasoner",
 }
 
-LLM_OPTIONS = ["Claude 3.5 with Amazon Bedrock", "GPT 4o", "GPT 4o (Azure)"]
+LLM_OPTIONS = ["Claude 3.5 with Amazon Bedrock", "GPT 4o", "GPT 4o (Azure)", "DeepSeek Chat", "DeepSeek Reasoner"]
 
 # Provider configuration
 PROVIDER_MAPPING = {
     "Claude 3.5 with Amazon Bedrock": "bedrock",
     "GPT 4o": "openai",
     "GPT 4o (Azure)": "azure",
+    "DeepSeek Chat": "deepseek",
+    "DeepSeek Reasoner": "deepseek",
 }
 
 INITIAL_STAGE = {
@@ -223,7 +229,7 @@ SUCCESS_MESSAGE = """
         🎉🎉Task completed successfully! If you found this useful, please consider:
         ⭐ [Starring our repository](https://github.com/autogluon/autogluon-assistant)
         """
-S3_URL = "https://automl-mm-bench.s3.us-east-1.amazonaws.com/autogluon-assistant/sample_dataset.zip"
+S3_URL = "https://automl-mm-bench.s3.us-east-1.amazonaws.com/autogluon/autogluon-assistant/sample_dataset.zip"
 LOCAL_ZIP_PATH = "sample_data.zip"
 EXTRACT_DIR = "sample_dataset"
 IGNORED_MESSAGES = [

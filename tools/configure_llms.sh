@@ -25,6 +25,7 @@ tmp_OPENAI_API_KEY=""
 tmp_AZURE_OPENAI_API_KEY=""
 tmp_OPENAI_API_VERSION=""
 tmp_AZURE_OPENAI_ENDPOINT=""
+tmp_DEEPSEEK_API_KEY=""
 
 # Function to print colored messages
 print_color() {
@@ -90,6 +91,7 @@ read_existing_config() {
                     "AZURE_OPENAI_API_KEY") tmp_AZURE_OPENAI_API_KEY="$value" ;;
                     "OPENAI_API_VERSION") tmp_OPENAI_API_VERSION="$value" ;;
                     "AZURE_OPENAI_ENDPOINT") tmp_AZURE_OPENAI_ENDPOINT="$value" ;;
+                    "DEEPSEEK_API_KEY") tmp_DEEPSEEK_API_KEY="$value" ;;
                 esac
             fi
         done < "$CONFIG_FILE"
@@ -117,6 +119,9 @@ save_configuration() {
             tmp_OPENAI_API_VERSION="$OPENAI_API_VERSION"
             tmp_AZURE_OPENAI_ENDPOINT="$AZURE_OPENAI_ENDPOINT"
             ;;
+        "deepseek")
+            tmp_DEEPSEEK_API_KEY="$DEEPSEEK_API_KEY"
+            ;;
     esac
     
     # Save all configurations
@@ -136,6 +141,10 @@ save_configuration() {
         echo "AZURE_OPENAI_ENDPOINT=$tmp_AZURE_OPENAI_ENDPOINT" >> "$CONFIG_FILE"
     fi
     
+    if [ -n "$tmp_DEEPSEEK_API_KEY" ]; then
+        echo "DEEPSEEK_API_KEY=$tmp_DEEPSEEK_API_KEY" >> "$CONFIG_FILE"
+    fi
+    
     # Export all variables
     if [ -n "$tmp_AWS_ACCESS_KEY_ID" ]; then
         export AWS_DEFAULT_REGION="$tmp_AWS_DEFAULT_REGION"
@@ -151,6 +160,10 @@ save_configuration() {
         export AZURE_OPENAI_API_KEY="$tmp_AZURE_OPENAI_API_KEY"
         export OPENAI_API_VERSION="$tmp_OPENAI_API_VERSION"
         export AZURE_OPENAI_ENDPOINT="$tmp_AZURE_OPENAI_ENDPOINT"
+    fi
+    
+    if [ -n "$tmp_DEEPSEEK_API_KEY" ]; then
+        export DEEPSEEK_API_KEY="$tmp_DEEPSEEK_API_KEY"
     fi
     
     # Set proper permissions
@@ -206,6 +219,14 @@ display_config() {
     else
         print_color "$YELLOW" "Azure OpenAI is not configured"
     fi
+
+    echo
+    print_color "$GREEN" "DeepSeek Configuration:"
+    if [ -n "$tmp_DEEPSEEK_API_KEY" ]; then
+        echo "DEEPSEEK_API_KEY=********"
+    else
+        print_color "$YELLOW" "DeepSeek is not configured"
+    fi
     echo
 }
 
@@ -237,6 +258,15 @@ display_env_vars() {
     echo "AZURE_OPENAI_ENDPOINT=${AZURE_OPENAI_ENDPOINT:-(not set)}"
     echo
 
+    echo
+    print_color "$GREEN" "DeepSeek Environment Variables:"
+    if [ -n "$DEEPSEEK_API_KEY" ]; then
+        echo "DEEPSEEK_API_KEY=********"
+    else
+        echo "DEEPSEEK_API_KEY=(not set)"
+    fi
+    echo
+
     # Compare configuration with environment variables
     if [ -f "$CONFIG_FILE" ]; then
         read_existing_config
@@ -263,6 +293,9 @@ display_env_vars() {
         if [ -n "$tmp_AZURE_OPENAI_ENDPOINT" ] && [ "$tmp_AZURE_OPENAI_ENDPOINT" != "$AZURE_OPENAI_ENDPOINT" ]; then
             has_mismatch=true
         fi
+        if [ -n "$tmp_DEEPSEEK_API_KEY" ] && [ "$tmp_DEEPSEEK_API_KEY" != "$DEEPSEEK_API_KEY" ]; then
+            has_mismatch=true
+        fi
         
         if [ "$has_mismatch" = true ]; then
             print_color "$YELLOW" "Warning: Some environment variables don't match the configuration file."
@@ -277,7 +310,8 @@ configure_provider() {
     echo "1) AWS Bedrock"
     echo "2) OpenAI"
     echo "3) Azure OpenAI"
-    echo -n "Enter your choice (1/2/3): "
+    echo "4) DeepSeek"
+    echo -n "Enter your choice (1/2/3/4): "
     read provider_choice
     
     case $provider_choice in
@@ -346,6 +380,16 @@ configure_provider() {
             done
             
             save_configuration "azure"
+            ;;
+
+        4)
+            print_color "$BLUE" "\nConfiguring DeepSeek..."
+            
+            echo -n "Enter your DeepSeek API Key: "
+            read -s DEEPSEEK_API_KEY
+            echo
+            
+            save_configuration "deepseek"
             ;;
             
         *)
