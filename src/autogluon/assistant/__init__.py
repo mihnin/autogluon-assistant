@@ -201,7 +201,7 @@ def run_assistant(
 
     timer = TimingContext(start_time=start_time, total_time_limit=config.time_limit)
     with time_block("initializing components", timer):
-        rprint("🤖 [bold red] Welcome to AutoGluon-Assistant [/bold red]")
+        rprint("[bold red] Welcome to AutoGluon-Assistant [/bold red]")
 
         rprint("Will use task config:")
         rprint(OmegaConf.to_container(config))
