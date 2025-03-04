@@ -423,8 +423,14 @@ def setup_local_dataset():
     """Download dataset from S3 to local directory"""
     try:
         if not os.path.exists(EXTRACT_DIR):
-            response = requests.get(S3_URL, stream=True)
-            if response.status_code == 200:
+            # Create the directory even if download fails
+            os.makedirs(EXTRACT_DIR, exist_ok=True)
+            
+            # Try alternative URL from documentation
+            alt_url = "https://automl-mm-bench.s3.us-east-1.amazonaws.com/aga/data/aga_sample_data.zip"
+            response = requests.get(alt_url, stream=True)
+            
+            if (response.status_code == 200):
                 with open(LOCAL_ZIP_PATH, "wb") as f:
                     f.write(response.content)
                 try:
@@ -436,13 +442,16 @@ def setup_local_dataset():
                 finally:
                     os.remove(LOCAL_ZIP_PATH)
             else:
-                st.error(f"Failed to download the file. HTTP status code: {response.status_code}")
+                st.warning(f"Could not download sample datasets. Using empty directory.")
     except requests.exceptions.RequestException as e:
         st.error(f"An error occurred while downloading the sample dataset: {e}")
+        os.makedirs(EXTRACT_DIR, exist_ok=True)  # Still create directory
     except OSError as e:
         st.error(f"An error occurred while handling files or directories: {e}")
+        os.makedirs(EXTRACT_DIR, exist_ok=True)  # Still create directory
     except Exception as e:
         st.error(f"An unexpected error occurred: {e}")
+        os.makedirs(EXTRACT_DIR, exist_ok=True)  # Still create directory
 
 
 def get_sample_dataset_files(dataset_dir):
@@ -460,6 +469,10 @@ def get_sample_dataset_files(dataset_dir):
 
 def get_available_datasets(sample_dataset_dir):
     """Get all subdirectories in the sample_dataset directory."""
+    # Create the directory if it doesn't exist
+    os.makedirs(sample_dataset_dir, exist_ok=True)
+    
+    # Then try to list its subdirectories
     return [d.name for d in Path(sample_dataset_dir).iterdir() if d.is_dir()]
 
 

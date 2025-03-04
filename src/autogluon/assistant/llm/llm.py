@@ -62,7 +62,7 @@ class AssistantAzureChatOpenAI(AzureChatOpenAI, BaseModel):
     AssistantAzureChatOpenAI is a subclass of AzureChatOpenAI that traces the input and output of the model.
     """
 
-    history_: List[Dict[str, Any]] = Field(default_factory(list))
+    history_: List[Dict[str, Any]] = Field(default_factory=list)
     input_: int = Field(default=0)
     output_: int = Field(default=0)
 
@@ -101,7 +101,7 @@ class AssistantChatBedrock(ChatBedrock, BaseModel):
     AssistantChatBedrock is a subclass of ChatBedrock that traces the input and output of the model.
     """
 
-    history_: List[Dict[str, Any]] = Field(default_factory(list))
+    history_: List[Dict[str, Any]] = Field(default_factory=list)
     input_: int = Field(default=0)
     output_: int = Field(default=0)
 
@@ -146,7 +146,7 @@ class AssistantChatDeepSeek(ChatOpenAI, BaseModel):
     and provides integration with DeepSeek API.
     """
 
-    history_: List[Dict[str, Any]] = Field(default_factory(list))
+    history_: List[Dict[str, Any]] = Field(default_factory=list)
     input_: int = Field(default=0)
     output_: int = Field(default=0)
 
